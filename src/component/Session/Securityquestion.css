@@ -1,0 +1,29 @@
+.container {
+    margin: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    max-width: 600px;
+    background-color: #f9f9f9;
+  }
+  
+  .row {
+    margin-bottom: 15px;
+  }
+  
+  label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  span.validity {
+    display: block;
+    color: red;
+  }
+  
+  .App-form-register {
+    display: flex;
+    flex-direction: column;
+  }
+  
