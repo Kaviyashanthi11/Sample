@@ -36,7 +36,8 @@ const  MaintenanceMaster=()=> {
     
       const fetchData = async () => {
         try {
-          const response = await fetch('/React/web/index.php?r=api/maintenance-master-view');
+          const apiPath = 'maintenance-master-view'; // This could change for other APIs
+          const response = await fetch(`http://localhost:5000/api/${apiPath}`);
           const result = await response.json();
           if (response.ok) {
             const transformedData = result.map((item, index) => ({
@@ -60,66 +61,78 @@ const  MaintenanceMaster=()=> {
         }));
       };
       const handleSubmit = async (e) => {
+        e.preventDefault(); // Prevent default form submission behavior
+      
         if (!formData.dtFromDateTime) {
           alert("Please select From Date");
-          return; // Exit the function if any field is missing
+          return; // Exit if From Date is missing
         }
+      
         if (!formData.dtToDateTime) {
           alert("Please select To Date");
-          return; // Exit the function if any field is missing
+          return; // Exit if To Date is missing
         }
-      setOpen(true); 
+      
+        setOpen(true); // Show the modal or some loading indicator
+      
         const requestData = {
-            dtFromDateTime: formatDate(formData.dtFromDateTime || ""),
-            dtToDateTime: formatDate(formData.dtToDateTime || ""),
-            bIsActive: formData.bIsActive || "1",
+          dtFromDateTime: formatDate(formData.dtFromDateTime || ""),
+          dtToDateTime: formatDate(formData.dtToDateTime || ""),
+          bIsActive: formData.bIsActive || "1",
         };
-    
-        if (isEditing) {
-          fetch(`/React/web/index.php?r=api/maintenance-master-save&id=${formData.iMaintenanceId}`, {
-              method: "PUT",
-              headers: {
-                  "Content-Type": "application/json",
-              },
-              body: JSON.stringify(requestData),
-          })
-              .then((response) => {
-                  if (!response.ok) throw new Error("Failed to update row");
-                  return response.json();
-              })
-              .then(() => {
-                  const updatedTableData = data.map((item) =>
-                      item.iMaintenanceId === formData.iMaintenanceId
-                          ? { ...item, ...requestData }
-                          : item
-                  );
-                  setData(updatedTableData); 
-                  alert("Record Updated successfully");
-                  setOpen(false)
-                  handleReset(); 
-              })
-              .catch((error) => console.error("Update failed:", error));
-      } else {
-          fetch("/React/web/index.php?r=api/maintenance-master-save", {
-              method: "POST",
-              headers: {
-                  "Content-Type": "application/json",
-              },
-              body: JSON.stringify(requestData),
-          })
-              .then((response) => response.json())
-              .then((data) => {
-                  const iMaintenanceId = data.length + 1;
-                  const newRow = { id: iMaintenanceId, ...requestData };
-                  setData((prevState) => [...prevState, newRow]); 
-                  setOpen(false)
-                  alert("Record Created successfully");
-                  handleReset(); 
-              })
-              .catch((error) => console.error("Error adding:", error));
-      }
-  };
-    
+      
+        const apiPath = isEditing
+          ? `/maintenance-master-save?id=${formData.iMaintenanceId}` // For update
+          : '/maintenance-master-save'; // For create
+      
+        const method = isEditing ? 'PUT' : 'POST'; // Decide method (PUT for updating, POST for creating)
+      
+        try {
+          const response = await fetch(`http://localhost:5000/api${apiPath}`, {
+            method: method,
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestData),
+          });
+      
+          if (!response.ok) {
+            throw new Error(isEditing ? "Failed to update row" : "Failed to create row");
+          }
+      
+          const data = await response.json();
+          console.log('API response data:', data);
+      
+          if (isEditing) {
+            // Assuming `data` contains the updated row
+            const updatedRow = data; // Adjust this based on your actual response structure
+      
+            // Update the table with the updated row
+            setData((prevState) =>
+              prevState.map((item) =>
+                item.iMaintenanceId === formData.iMaintenanceId
+                  ? { ...item, ...updatedRow } // Update the specific row
+                  : item
+              )
+            );
+            alert("Record Updated successfully");
+          } else {
+            // Assuming `data` contains the newly created row
+            const newRow = data; // Adjust this based on your actual response structure
+      
+            setData((prevState) => [...prevState, newRow]); // Add the new row to the table
+            alert("Record Created successfully");
+          }
+      
+          setOpen(false);
+          handleReset(); // Reset form data
+      
+        } catch (error) {
+          console.error("Error:", error);
+          alert(error.message);
+        }
+      };
+      
     const handleEdit = (row) => {
         const itemToEdit = data.find((item) => item.id === row.id);
     
