@@ -1,9 +1,0 @@
-{
-    "rewrites": [
-      {
-        "source": "/api/:path*",
-        "destination": "https://rcm1-eclaimstatus.com/api/:path*"
-      }
-    ]
-  }
-  
