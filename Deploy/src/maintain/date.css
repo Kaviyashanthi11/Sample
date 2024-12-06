@@ -1,0 +1,12 @@
+.wider-datepicker {
+  width: 300px; /* Adjust the width as needed */
+}
+
+.custom-datepicker::placeholder {
+    color: black;
+  }
+
+.custom-datepicker:focus {
+    outline: none;
+    border-color: #2196f3;
+  }

@@ -1,0 +1,8 @@
+*:focus {
+  outline: none;
+}
+/* Add styles for active sidebar item */
+.active {
+  background-color: #e0e0e0; /* Change to whatever color you prefer */
+  color: #000000; /* Change to desired text color */
+}
