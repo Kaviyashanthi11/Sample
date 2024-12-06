@@ -1,8 +1,10 @@
 {
-  "name": "my-express-server",
+  "name": "backend",
   "version": "1.0.0",
   "main": "server.mjs",
-  "type": "module",
+  "scripts": {
+    "start": "node server.mjs"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -11,9 +13,7 @@
     "cors": "^2.8.5",
     "express": "^4.21.1",
     "helmet": "^8.0.0",
-    "node-fetch": "^3.3.2"
-  },
-  "scripts": {
-    "start": "node server.mjs"
+    "node-fetch": "^3.3.2",
+    "serverless-http": "^3.2.0"
   }
 }

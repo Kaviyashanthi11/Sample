@@ -4,11 +4,15 @@ import cors from 'cors';
 import helmet from 'helmet';
 
 const app = express();
+
+// Security middleware
 app.use(helmet()); // Use Helmet for security
 
 // Enable CORS for all origins (consider restricting to specific origins in production)
 app.use(cors());
-app.use(express.json()); // To parse JSON bodies
+
+// Parse JSON request bodies
+app.use(express.json()); 
 
 // Proxy endpoint to handle dynamic API paths (for GET, POST, PUT methods)
 app.all('/api/*', async (req, res) => {
@@ -48,6 +52,13 @@ app.all('/api/*', async (req, res) => {
 
 // Start the server on port 5000 (or another port of your choice)
 const port = process.env.PORT || 5000;
-app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
+
+// Listen on all network interfaces (0.0.0.0) so that it's accessible externally
+app.listen(port, '0.0.0.0', () => {
+  console.log(`Server running on http://0.0.0.0:${port}`);
+});
+
+// Handle all other routes and serve React app (assuming the React app is built)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
 });
